@@ -1,0 +1,113 @@
+<!--
+
+-->
+<style>
+@font-face {
+    font-family: "font";
+    src: url("/assets/fonts/inter_reg.ttf") format("truetype"),
+}
+.font {
+    font-family: "font";
+}
+body {
+    background-color: red;
+}
+.now_container {
+    color: white;
+    background: linear-gradient(to left, #323230, #13191C);
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 40%;
+
+    display: flex;
+    align-items: flex-start;   /* align items at the top */
+    gap: 1rem;                 /* space between image and text */
+}
+.now_container img {
+    display: block;
+    z-index: 99;
+}
+.now_container marquee {
+    width: calc(100% + 13%); /* 100% + image width */
+    margin-left: -13%;       /* start behind the image */
+}
+.crawl_container { 
+    background: #A4CFFD;
+    top: 40%; left: 0;
+    position: absolute;
+    width: 100%;
+    height: 60%;
+    font-size: 25px;
+}
+</style>
+<meta http-equiv="refresh" content="1800">
+<body>
+<div class="now_container font">
+    <img src="/assets/now.png" width="13%" height="auto">
+    <marquee scrollamount="10">
+        <span id="MAJORCRAWL"></span>
+    </marquee>
+</div>
+    <div class="crawl_container font" >
+        <marquee scrollamount="7">
+            This simulator is in beta. It may contain bugs and probably isn't the best to use for life saving weather information.
+        </marquee>
+    </div>
+<script>
+    fetch("https://pro.ip-api.com/json/?key=AmUN9xAaQALVYu6")
+    .then(response => response.json())
+    .then(data => {
+        fetch("https://api.weather.com/v3/location/near?geocode=" + data.lat + "," + data.lon + "&product=observation&format=json&apiKey=e1f10a1e78da46f5b10a1e78da96f525")
+        .then(response => response.json())
+        .then(data => {
+            const stations = data.location.stationId.slice(1);
+            const names = data.location.stationName.slice(1);
+
+            // 1. Map the stations to an array of Fetch Promises
+            const weatherPromises = stations.map((station, i) => {
+                const city = names[i];
+                console.log(`Getting data for ${city}`);
+                return getWeather(station, city);
+            });
+
+            // 2. Define the function to RETURN the promise chain
+            function getWeather(station, city) {
+                return fetch("/data.php?loc=" + station)
+                    .then(response => {
+                        if (response.status === 400) {
+                            return fetch("/data.php?loc=" + city);
+                        }
+                        return response;
+                    })
+                    .then(response => response.json())
+                    .then(info => {
+                        // Return the formatted string so it gets passed to Promise.all
+                        return `${city}: ${info.current.conditions.temperature} ${info.current.info.phraseLong}`;
+                    })
+                    .catch(err => {
+                        console.error(err);
+                        return null; // Return null if error so we can filter it out later
+                    });
+            }
+
+            // 3. Wait for ALL fetches to complete
+            Promise.all(weatherPromises).then(results => {
+                // Filter out any failed requests (nulls)
+                const validResults = results.filter(r => r !== null);
+                
+                // Join the array into a string using a separator
+                const weatherString = validResults.join("&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"); 
+
+                console.log(weatherString);
+
+                const majormarquee = document.getElementById("MAJORCRAWL");
+                
+                // 4. Use innerHTML so &nbsp; renders as a space
+                majormarquee.innerHTML = weatherString;
+            });
+        });
+    })
+</script>
+</body>

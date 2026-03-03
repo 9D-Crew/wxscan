@@ -1,0 +1,30 @@
+<style>
+@font-face {
+    font-family: "font";
+    src: url("/assets/fonts/inter_reg.ttf") format("truetype"),
+}
+.font {
+    font-family: "font";
+}
+</style>
+<h1 style="text-align: right; font-size: 18px;" class="font" id="clock">LOA D0<br>12:59:59pm</h1>
+<script>
+function updateClock() {
+    const el = document.getElementById("clock");
+    const now = new Date();
+
+    const month = now.toLocaleString("en-US", { month: "short" });
+    const day = String(now.getDate()).padStart(2, "0");
+
+    let hours = now.getHours();
+    const minutes = String(now.getMinutes()).padStart(2, "0");
+    const seconds = String(now.getSeconds()).padStart(2, "0");
+
+    const ampm = hours >= 12 ? "pm" : "am";
+    hours = hours % 12 || 12;
+
+    el.innerHTML = `${month} ${day}<br>${hours}:${minutes}:${seconds}${ampm}`;
+}
+updateClock();
+setInterval(updateClock, 1000);
+</script>

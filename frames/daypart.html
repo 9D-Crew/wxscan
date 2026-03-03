@@ -1,0 +1,291 @@
+<html>
+    <!-- This is the worst css I have ever wrote, godspeed contributors. -->
+    <style>
+        body {background-color: red;}
+        .topbar {
+            background-color: #e7db7e;
+            position: absolute;
+            font-size: 20px;
+            top: 0; left: 0;
+            width: 100%; height: 20%;
+        }
+        #title {
+            color: #052d8d;
+        }
+        @font-face {
+        font-family: "font";
+        src: url("/assets/fonts/inter_bold.ttf") format("truetype"),
+        }
+        @font-face {
+        font-family: "font1";
+        src: url("/assets/fonts/inter_reg.ttf") format("truetype"),
+        }
+        .font {
+            font-family: "font";
+        }
+        .mainpart {
+            font-family: "font1";
+            background-color: #8CADD1;
+            position: absolute;
+            top: 20%; left: 0;
+            width: 100%; height: 80%;
+        }
+        #textpart {
+            font-size: 20px;
+        }
+        #fivedaypart {
+            background-image: url('/assets/daypartBG.png');
+        }
+        #hourlypart {
+            background-image: url('/assets/daypart2BG.png');
+        }
+        .hidden {
+            display: none;
+        }
+        #dp_t1, #dp_t2, #dp_t3, #dp_t4, #dp_t5 {
+            font-size: 20px;
+            color: white;
+            padding-right: 49.5px;
+        }
+        #dp_t1 {
+            color: #001668;
+        }
+        .dp_boxholder {
+            position: absolute;
+            top: 26%;
+            width: 100%;
+            height: 74%;
+            display: flex;
+            align-items: flex-start;
+        }
+
+        .hp_boxholder {
+            position: absolute;
+            top: 26%;
+            width: 100%;
+            height: 74%;
+            display: flex;
+            align-items: flex-start;
+        }
+
+        #dp_b1, #dp_b2, #dp_b3, #dp_b4, #dp_b5 {
+            width: 16.7%;
+            height: 100%;
+        }
+
+        #hp_b1, #hp_b2, #hp_b3, #hp_b4, #hp_b5 {
+            width: 16.7%;
+            height: 100%;
+        }
+
+        .fivedayicon1 {
+            position: absolute;
+            top: 15px; left: 0;
+            width: 10%; height: auto;
+        }
+
+        .fivedayicon2 {
+            position: absolute;
+            top: 15px; left: 95.8333px;
+            width: 10%; height: auto;
+        }
+
+        .fivedayicon3 {
+            position: absolute;
+            top: 15px; left: 191.6666px;
+            width: 10%; height: auto;
+        }
+
+        .fivedayicon4 {
+            position: absolute;
+            top: 15px; left: 287.4999px;
+            width: 10%; height: auto;
+        }
+
+        .fivedayicon5 {
+            position: absolute;
+            top: 15px; left: 383.3332px;
+            width: 10%; height: auto;
+        }
+
+        .fivedayhigh1 {
+            position: absolute;
+            text-align: right;
+            top: -5px; left: 11%;
+        }
+
+        .fivedaylow1 {
+            position: absolute;
+            text-align: right;
+            top: 23px; left: 12%;
+        }
+
+        .fivedayhigh2 {
+            position: absolute;
+            text-align: right;
+            top: -5px; left: calc(11% + 95.8333px);
+        }
+
+        .fivedaylow2 {
+            position: absolute;
+            text-align: right;
+            top: 23px; left: calc(12% + 95.8333px);
+        }
+
+        .fivedayhigh3 {
+            position: absolute;
+            text-align: right;
+            top: -5px; left: calc(11% + 191.6666px);
+        }
+
+        .fivedaylow3 {
+            position: absolute;
+            text-align: right;
+            top: 23px; left: calc(12% + 191.6666px);
+        }
+
+        .fivedayhigh4 {
+            position: absolute;
+            text-align: right;
+            top: -5px; left: calc(11% + 287.4999px);
+        }
+
+        .fivedaylow4 {
+            position: absolute;
+            text-align: right;
+            top: 23px; left: calc(12% + 287.4999px);
+        }
+
+        .fivedayhigh5 {
+            position: absolute;
+            text-align: right;
+            top: -5px; left: calc(11% + 383.3332px);
+        }
+
+        .fivedaylow5 {
+            position: absolute;
+            text-align: right;
+            top: 23px; left: calc(12% + 383.3332px);
+        }
+
+
+        .hpicon1 {
+            position: absolute;
+            top: -12px; left: 2px;
+            width: 10%; height: auto;
+        }
+
+        .hpicon2 {
+            position: absolute;
+            top: -12px; left: 123px;
+            width: 10%; height: auto;
+        }
+
+        .hpicon3 {
+            position: absolute;
+            top: -12px; left: 244px;
+            width: 10%; height: auto;
+        }
+
+        .hpicon4 {
+            position: absolute;
+            top: -12px; left: 365px;
+            width: 10%; height: auto;
+        }
+
+        .hptemp1 {
+            position: absolute;
+            text-align: right;
+            top: -35px; left: 13%;
+        }
+
+        .hptemp2 {
+            position: absolute;
+            text-align: right;
+            top: -35px; left: calc(13% + 120px);
+        }
+
+        .hptemp3 {
+            position: absolute;
+            text-align: right;
+            top: -35px; left: calc(13% + 240px);
+        }
+
+        .hptemp4 {
+            position: absolute;
+            text-align: right;
+            top: -35px; left: calc(13% + 360px);
+        }
+
+        .shiny {
+            background: linear-gradient(90deg,rgba(102, 102, 102, 1) 0%, rgba(255, 255, 255, 1) 50%, rgba(102, 102, 102, 1) 100%);;
+        }
+    </style>
+    <body>
+        <div class="topbar font">
+            <span id="city">FIREFOX</span>
+            <span>: </span>
+            <span id="title">SATURDAY'S FORECAST</span>
+        </div>
+
+        <div class="mainpart hidden" id="textpart">
+	    I turned crawl on just for a screenshot, crawl really lags the entire sim down just because of all the data.
+        </div>
+
+        <div class="mainpart hidden" id="fivedaypart">
+            <span id="dp_t1">SUN</span>
+            <span id="dp_t2">MON</span>
+            <span id="dp_t3">TUE</span>
+            <span id="dp_t4">WED</span>
+            <span id="dp_t5">THU</span>
+            <div class="dp_boxholder">
+                <div id="dp_b1">
+                    <img src="/assets/icon/0.webp" class="fivedayicon1">
+                    <h2 class="fivedayhigh1">99</h2>
+                    <h3 class="fivedaylow1">99</h3>
+                </div>
+                <div id="dp_b2">
+                    <img src="/assets/icon/0.webp" class="fivedayicon2">
+                    <h2 class="fivedayhigh2">99</h2>
+                    <h3 class="fivedaylow2">99</h3>
+                </div>
+                <div id="dp_b3">
+                    <img src="/assets/icon/0.webp" class="fivedayicon3">
+                    <h2 class="fivedayhigh3">99</h2>
+                    <h3 class="fivedaylow3">99</h3>
+                </div>
+                <div id="dp_b4">
+                    <img src="/assets/icon/0.webp" class="fivedayicon4">
+                    <h2 class="fivedayhigh4">99</h2>
+                    <h3 class="fivedaylow4">99</h3>
+                </div>
+                <div id="dp_b5">
+                    <img src="/assets/icon/0.webp" class="fivedayicon5">
+                    <h2 class="fivedayhigh5">99</h2>
+                    <h3 class="fivedaylow5">99</h3>
+                </div>
+            </div>
+        </div>
+
+        <div class="mainpart" id="hourlypart">
+            <div class="hp_boxholder">
+                <div id="hp_b1">
+                    <img src="/assets/icon/0.webp" class="hpicon1">
+                    <h2 class="hptemp1">99</h2>
+                </div>
+                <div id="hp_b2">
+                    <img src="/assets/icon/0.webp" class="hpicon2">
+                    <h2 class="hptemp2">99</h2>
+                </div>
+                <div id="hp_b3">
+                    <img src="/assets/icon/0.webp" class="hpicon3">
+                    <h2 class="hptemp3">99</h2>
+                </div>
+                <div id="hp_b4">
+                    <img src="/assets/icon/0.webp" class="hpicon4">
+                    <h2 class="hptemp4">99</h2>
+                </div>
+            </div>
+        </div>
+    </body>
+</html>

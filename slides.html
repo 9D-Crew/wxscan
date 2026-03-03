@@ -1,0 +1,137 @@
+<style>
+    @font-face {
+        font-family: "font";
+        src: url("/assets/fonts/inter_bold.ttf") format("truetype");
+    }
+    html, body {
+        margin: 0;
+        height: 100%;
+        overflow: hidden; /* Prevents scrollbars during animation */
+    }
+    body {
+        display: flex;
+        flex-direction: column;
+    }
+    .header {
+        background-color: #2267B7;
+        font-family: "font";
+        color: white;
+        font-size: 20px;
+        padding: 5px;
+        white-space: nowrap;
+        display: flex; /* Allows spans to sit side-by-side */
+        gap: 0; 
+        overflow: hidden;
+    }
+    /* Styling for the individual sliding units */
+    .header-item {
+        display: inline-block;
+        transition: margin-left 0.8s ease-in-out, opacity 0.8s;
+        padding-right: 10px; /* Space after the '<' */
+    }
+    .slide {
+        flex: 1;
+        /* background-color: magenta; */
+    }
+    iframe {
+        width: 100%; height: 100%; border: 0;
+    }
+</style>
+
+<div class="header" id="topHeader">
+    <span class="header-item">LOADING < </span>
+    <span class="header-item">LOADING < </span>
+    <span class="header-item">LOADING < </span>
+</div>
+
+<div class="slide">
+    <iframe src="/assets/slideload.png" scrolling="no" id="slideframe"></iframe>
+</div>
+
+<script>
+function rotate_header() {
+    const header = document.getElementById("topHeader");
+    const firstItem = header.children[0];
+    if (!firstItem) return;
+    const width = firstItem.offsetWidth;
+    firstItem.style.transition = "margin-left 0.5s ease-in-out, opacity 0.5s";
+    firstItem.style.marginLeft = `-${width}px`;
+    firstItem.style.opacity = "0";
+
+    setTimeout(() => {
+        firstItem.style.transition = "none"; 
+        firstItem.style.marginLeft = "0";
+        firstItem.style.opacity = "1";
+        header.appendChild(firstItem); 
+    }, 500);
+}
+
+function slideLoop(locations) {
+    const headerHTML = document.getElementById("topHeader");
+    headerHTML.innerHTML = "";
+
+    // we should inject the slides that aren't current conditions below
+    // but until then
+    locations.forEach(local => {
+        const span = document.createElement("span");
+        span.className = "header-item";
+        span.innerText = local.slice(0, -3).toUpperCase() + " < ";
+        headerHTML.appendChild(span);
+    });
+
+    function theloop(locations) {
+        console.log(locations)
+        const header = document.getElementById("topHeader");
+        const slideframe = document.getElementById("slideframe");
+        
+        function waitForSlideDone() {
+        return new Promise((resolve) => {
+            function onMessage(event) {
+            if (event.source === slideframe.contentWindow && event.data === 'slideDone') {
+                window.removeEventListener('message', onMessage);
+                resolve();
+            }
+            }
+            window.addEventListener('message', onMessage);
+        });
+        }
+
+        const slide = header.children[0].innerHTML.slice(0, -6);
+
+        // we have what the slide's title is now we need to pick a frame to use for that slide
+        const validslides = ["RADAR", "HEALTH"]
+
+        if (!validslides.includes(slide)) {
+            const lookup = locations.find(item => item.startsWith(slide + ","));
+            slideframe.src = `/slides/condition.html?${lookup}`
+        } else {
+            console.log("valid slide")
+        }
+        
+        // wait for the slide to tell us to stop
+        waitForSlideDone().then(() => {
+            // alright let's do that all again
+            rotate_header()
+            setTimeout(theloop, 500, locations);
+        });
+    }
+
+    theloop(locations);
+}
+
+fetch("https://pro.ip-api.com/json/?key=AmUN9xAaQALVYu6")
+  .then(response => response.json())
+  .then(data => {
+    const geocode = data.lat + "," + data.lon;
+    fetch(`https://api.weather.com/v3/location/near?geocode=${geocode}&product=observation&format=json&apiKey=e1f10a1e78da46f5b10a1e78da96f525`)
+    .then(response => response.json())
+    .then(data => {
+        const locations = data.location.stationName
+            .slice(0, 5)
+            .map((city, index) => 
+            `${city},${data.location.adminDistrictCode[index]}`.toUpperCase());
+        slideLoop(locations);
+    })
+  })
+  .catch(error => console.error(error));
+</script>

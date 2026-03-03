@@ -1,0 +1,7 @@
+<h1 id="test"></h1>
+<script>
+setTimeout(function() {window.parent.postMessage('slideDone', '*');}, 5000);
+var params = window.location.search;
+const bah = document.getElementById("test");
+bah.innerText = params;
+</script>
