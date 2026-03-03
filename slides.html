@@ -103,7 +103,7 @@ function slideLoop(locations) {
 
         if (!validslides.includes(slide)) {
             const lookup = locations.find(item => item.startsWith(slide + ","));
-            slideframe.src = `/slides/condition.html?${lookup}`
+            slideframe.src = `/slides/condition.php?${lookup}`
         } else {
             console.log("valid slide")
         }

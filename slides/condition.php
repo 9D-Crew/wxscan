@@ -16,7 +16,7 @@
     color: white;
     top: 0;
     left: 0;
-    background-image: url('/assets/ccbg2.png');
+    background-image: url('/assets/ccbgs/<?php $randomNumber = rand(1, 7); echo $randomNumber; ?>.png');
     width: 96%;
     height: 99%;
     background-repeat: no-repeat;
