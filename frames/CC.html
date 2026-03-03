@@ -24,7 +24,7 @@
     <h2 style="margin-top: 12.5px; text-align: right;" class="font" id="city">Loading...</h2>
     <h1 style="margin-top: -5px; font-size: 30px; margin-left: 50px;" class="heavy">now</h1>
     <h1 style="margin-top: -10px; margin-right: 105px; text-align: right; font-size: 45px;" class="font" id="temp">99</h1>
-    <h1 style="margin-top: -20px; margin-left: 55px; font-size: 20px;" class="font" id="text_main">please wait</h1>
+    <h1 style="margin-top: -20px; margin-left: 55px; font-size: 20px; white-space: nowrap;" class="font" id="text_main">please wait</h1>
     <img id="icon" src="/assets/icon/36.webp" width="47%" height="auto">
 </body>
 
@@ -38,8 +38,13 @@ fetch("https://pro.ip-api.com/json/?key=AmUN9xAaQALVYu6")
   })
   .then(response => response.json())
   .then(data => {
+    let phrase = data.current.info.phraseLong.toLowerCase();
+    if (phrase === "showers in the vicinity") {
+      phrase = "showers in vicinity";
+    }
+
     const texts = [
-      data.current.info.phraseLong.toLowerCase(),
+      phrase,
       "wind " + data.current.conditions.windCardinal + " " + data.current.conditions.windSpeed,
       "gusts " + (data.current.conditions.windGusts !== null ? data.current.conditions.windGusts : 0) + " mph",
       "humidity " + data.current.conditions.humidity + "%",
