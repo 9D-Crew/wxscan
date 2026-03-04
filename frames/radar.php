@@ -83,15 +83,15 @@
     // --- GEOLOCATION LOGIC ---
     // Automatically locate user on load
 
-    fetch("https://pro.ip-api.com/json/?key=AmUN9xAaQALVYu6")
-    .then(response => response.json())
-    .then(data => {
-        map.flyTo({
-                center: [data.lon, data.lat],
-                zoom: 5,
-                essential: true
-            });
-    })
+    const urlParams = new URLSearchParams(window.location.search);
+    const urlLat = urlParams.get('lat');
+    const urlLon = urlParams.get('lon');
+
+    map.flyTo({
+        center: [urlLon,urlLat],
+        zoom: 5,
+        essential: true
+    });
 
     // --- RADAR LOOP LOGIC ---
     

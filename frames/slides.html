@@ -119,19 +119,17 @@ function slideLoop(locations) {
     theloop(locations);
 }
 
-fetch("https://pro.ip-api.com/json/?key=AmUN9xAaQALVYu6")
-  .then(response => response.json())
-  .then(data => {
-    const geocode = data.lat + "," + data.lon;
-    fetch(`https://api.weather.com/v3/location/near?geocode=${geocode}&product=observation&format=json&apiKey=e1f10a1e78da46f5b10a1e78da96f525`)
-    .then(response => response.json())
-    .then(data => {
-        const locations = data.location.stationName
-            .slice(0, 5)
-            .map((city, index) => 
-            `${city},${data.location.adminDistrictCode[index]}`.toUpperCase());
-        slideLoop(locations);
-    })
-  })
-  .catch(error => console.error(error));
+const urlParams = new URLSearchParams(window.location.search);
+const urlLat = urlParams.get('lat');
+const urlLon = urlParams.get('lon');
+const geocode = urlLat + "," + urlLon;
+fetch(`https://api.weather.com/v3/location/near?geocode=${geocode}&product=observation&format=json&apiKey=e1f10a1e78da46f5b10a1e78da96f525`)
+.then(response => response.json())
+.then(data => {
+    const locations = data.location.stationName
+        .slice(0, 5)
+        .map((city, index) => 
+        `${city},${data.location.adminDistrictCode[index]}`.toUpperCase());
+    slideLoop(locations);
+})
 </script>

@@ -4,15 +4,70 @@
     <link rel="stylesheet" type="text/css" href="./style.css">
 </head>
 <body>
-    <iframe src="./music.php" class="music"></iframe>
+    <iframe src="./music.php" width="100%" height="100%" id="music"></iframe>
     <div id="main">
-        <iframe src="./frames/clock.html" class="iframe clock" scrolling="no"></iframe>
-        <iframe src="./slides.html" class="iframe slides"></iframe>
-        <iframe src="./frames/CC.html" class="iframe current-conditions" scrolling="no"></iframe>
-        <iframe src="./frames/radar.php" class="iframe radar" scrolling="no"></iframe>
-        <iframe src="./frames/daypart.html" class="iframe daypart" scrolling="no"></iframe>
-        <iframe src="./frames/crawl.html" class="iframe crawl" scrolling="no"></iframe>
-        <img src="/assets/affiliate.webp" class="affiliate_logo">
     </div>
 </body>
+<script>
+// this is to improve on how many god damn times we call the ip api
+// (and also add manual locations)
+
+function buildmain(urlparam) {
+    const main = document.getElementById("main");
+    function createIframe(src, className, scrolling = null) {
+        const iframe = document.createElement("iframe");
+        iframe.src = src + (urlparam ? `${urlparam}` : "");
+        iframe.className = `iframe ${className}`;
+        if (scrolling) iframe.setAttribute("scrolling", scrolling);
+        return iframe;
+    }
+    main.appendChild(createIframe("./frames/clock.php", "clock", "no"));
+    main.appendChild(createIframe("./frames/slides.html", "slides"));
+    main.appendChild(createIframe("./frames/CC.html", "current-conditions", "no"));
+    main.appendChild(createIframe("./frames/radar.php", "radar", "no"));
+    main.appendChild(createIframe("./frames/daypart.html", "daypart", "no"));
+    main.appendChild(createIframe("./frames/crawl.html", "crawl", "no"));
+    const affiliate = document.createElement("img");
+    affiliate.src = "/assets/affiliate.webp";
+    affiliate.className = "affiliate_logo";
+    main.appendChild(affiliate);
+}
+
+var params = window.location.search;
+if (params !== "") {
+    // so we got a manual location
+    // let's abuse the fact lewolf's api can (technically) be used for geocoding
+    params = params.slice(1);
+    fetch("/data.php?loc=" + params)
+    .then(response => {if (!response.ok) {alert('bad geocode!');} return response.json();})
+    .then(data => {
+        // the geocode succeeded, let's build a param
+        let autism; let tism1; let tism2; let tism3;
+        tism1 = data.current.info.postalCode;
+        tism2 = data.current.info.geocode[0];
+        tism3 = data.current.info.geocode[1];
+        if (tism1 == null || tism2 == null || tism3 == null) {
+            alert("i don't think this is a US location?");
+        }
+        autism = "?zip=" + tism1 + "&lat=" + tism2 + "&lon=" + tism3;
+        buildmain(autism);
+    });
+} else {
+    // no location, let's do auto location
+    fetch("https://pro.ip-api.com/json/?key=AmUN9xAaQALVYu6")
+    .then(response => response.json())
+    .then(data => {
+        let autism; let tism1; let tism2; let tism3;
+        tism1 = data.zip;
+        tism2 = data.lat;
+        tism3 = data.lon;
+        if (tism1 == null || tism2 == null || tism3 == null) {
+            alert("i don't think this is a US location?");
+        }
+        autism = "?zip=" + tism1 + "&lat=" + tism2 + "&lon=" + tism3;
+        buildmain(autism);
+    });
+}
+</script>
+
 </html>

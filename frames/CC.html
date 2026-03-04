@@ -29,48 +29,47 @@
 </body>
 
 <script>
-fetch("https://pro.ip-api.com/json/?key=AmUN9xAaQALVYu6")
-  .then(response => response.json())
-  .then(data => {
-    const zip_code = data.zip;
-    document.getElementById("city").textContent = data.city;
-    return fetch("/data.php?loc=" + zip_code);
-  })
-  .then(response => response.json())
-  .then(data => {
-    let phrase = data.current.info.phraseLong.toLowerCase();
-    if (phrase === "showers in the vicinity") {
-      phrase = "showers in vicinity";
-    }
+const urlParams = new URLSearchParams(window.location.search);
+const urlZip = urlParams.get('zip');
 
-    const texts = [
-      phrase,
-      "wind " + data.current.conditions.windCardinal + " " + data.current.conditions.windSpeed,
-      "gusts " + (data.current.conditions.windGusts !== null ? data.current.conditions.windGusts : 0) + " mph",
-      "humidity " + data.current.conditions.humidity + "%",
-      "dew point " + data.current.conditions.dewPoint + "°",
-      "pressure " + data.current.conditions.pressure + " " + data.current.conditions.pressureTendencyPhrase[0],
-      data.current.conditions.visibility ? "visibility " + data.current.conditions.visibility + " miles" : "visibility unlimited",
-      data.current.conditions.cloudCeiling ? "ceiling " + data.current.conditions.cloudCeiling + " ft" : "ceiling unlimited",
-      "UV index " + data.extended.daypart[0].uvPhrase
-    ];
+fetch("/data.php?loc=" + urlZip)
+.then(response => response.json())
+.then(data => {
+  document.getElementById("city").textContent = data.current.info.cityName;
 
-    document.getElementById("icon").src = "/assets/icon/" + data.current.info.iconCode + ".webp";
-    document.getElementById("temp").textContent = data.current.conditions.temperature;
+  let phrase = data.current.info.phraseLong.toLowerCase();
+  if (phrase === "showers in the vicinity") {
+    phrase = "showers in vicinity";
+  }
 
-    let index = 0;
-    const textElement = document.getElementById("text_main");
+  const texts = [
+    phrase,
+    "wind " + data.current.conditions.windCardinal + " " + data.current.conditions.windSpeed,
+    "gusts " + (data.current.conditions.windGusts !== null ? data.current.conditions.windGusts : 0) + " mph",
+    "humidity " + data.current.conditions.humidity + "%",
+    "dew point " + data.current.conditions.dewPoint + "°",
+    "pressure " + data.current.conditions.pressure + " " + data.current.conditions.pressureTendencyPhrase[0],
+    data.current.conditions.visibility ? "visibility " + data.current.conditions.visibility + " miles" : "visibility unlimited",
+    data.current.conditions.cloudCeiling ? "ceiling " + data.current.conditions.cloudCeiling + " ft" : "ceiling unlimited",
+    "UV index " + data.extended.daypart[0].uvPhrase
+  ];
 
-    // Initial text
+  document.getElementById("icon").src = "/assets/icon/" + data.current.info.iconCode + ".webp";
+  document.getElementById("temp").textContent = data.current.conditions.temperature;
+
+  let index = 0;
+  const textElement = document.getElementById("text_main");
+
+  // Initial text
+  textElement.textContent = texts[index];
+
+  // Cycle every 10 seconds
+  setInterval(() => {
+    index = (index + 1) % texts.length;
     textElement.textContent = texts[index];
-
-    // Cycle every 10 seconds
-    setInterval(() => {
-      index = (index + 1) % texts.length;
-      textElement.textContent = texts[index];
-    }, 10000); // 10000 ms = 10 seconds
-  })
-  .catch(err => console.error(err));
+  }, 10000); // 10000 ms = 10 seconds
+})
+.catch(err => console.error(err));
 </script>
 
 <!-- 
