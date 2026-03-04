@@ -22,6 +22,7 @@ left: 6.2%;
 }
 .iframe {
 border:0;
+overflow: hidden;
 }
 .current-conditions {
     position: absolute;

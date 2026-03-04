@@ -50,6 +50,29 @@
     transform: translateX(-50%);
     text-align: center;
 }
+.leftside {
+    color: #DECD10;
+    position: absolute;
+    line-height: 1.6;
+    top: 20;
+    left: 15%;
+}
+#leftsidedata {
+    color: white;
+    position: absolute;
+    line-height: 1.6;
+    top: 20;
+    right: 41%;
+    text-align: right;
+}
+.slidebbar {
+    position: absolute;
+    top: 33;
+    right: 39%;
+    background-color: #0A105B;
+    width: 5px;
+    height: 88.2%;
+}
 </style>
 
 <div id="slideb">
@@ -57,7 +80,26 @@
 <h2 class="currentlytext">Currently</h2>
 <h2 id="citytext"></h2>
 
-<!-- big side -->
+<!-- left side -->
+<h2 class="leftside">
+Humidity<br>
+Dew Point<br>
+Pressure<br>
+Winds<br>
+Gusts<br>
+</h2>
+
+<div class="slidebbar"></div>
+
+<h2 id="leftsidedata">
+100%<br>
+999<br>
+30.24 R<br>
+calm<br>
+none<br>
+</h2>
+
+<!-- right side -->
 <img src="/assets/icon/0.webp" id="bigicon">
 <h2 id="bigcc"></h2>
 <h2 id="bigtemp">999</h2>
@@ -94,6 +136,15 @@ function getdata(params) {
         // icon
         target = document.getElementById("bigicon");
         target.src = "/assets/icon/" + data.current.info.iconCode + ".webp";
+        // left side
+        target = document.getElementById("leftsidedata");
+        let cooldata = [];
+        cooldata.push(data.current.conditions.humidity + "%");
+        cooldata.push(data.current.conditions.dewPoint);
+        cooldata.push(data.current.conditions.pressure + " " + data.current.conditions.pressureTendencyPhrase[0]);
+        cooldata.push(data.current.conditions.windCardinal + " " + data.current.conditions.windSpeed);
+        cooldata.push((data.current.conditions.windGusts !== null ? data.current.conditions.windGusts : "none"));
+        target.innerHTML = cooldata.join("<br>");
         // data is done, unhide the data
         target = document.getElementById("slidebdata");
         target.classList.remove('hidden')
