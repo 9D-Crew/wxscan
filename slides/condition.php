@@ -10,23 +10,28 @@
 .hidden {
     display: none;
 }
-#slideb {
+.slidebg {
+    background-image: url('/assets/ccbgs/<?php $randomNumber = rand(1, 7); echo $randomNumber; ?>.png');
+    background-repeat: no-repeat;
+    background-size: 100% 100%;
     position: absolute;
     font-family: "font";
     color: white;
     top: 0;
     left: 0;
-    background-image: url('/assets/ccbgs/<?php $randomNumber = rand(1, 7); echo $randomNumber; ?>.png');
     width: 96%;
     height: 99%;
-    background-repeat: no-repeat;
-    background-size: 100% 100%;
 }
 .currentlytext {
     position: absolute;
     top:-19;left:10;
 }
 #citytext {
+    position: absolute;
+    top:-18;right:80;
+    text-align: right;
+}
+#citytext2 {
     position: absolute;
     top:-18;right:80;
     text-align: right;
@@ -74,42 +79,58 @@
     width: 5px;
     height: 88.2%;
 }
+#textTitle {
+    color: #DECD10;
+    position: absolute;
+    top: 8%; left: 16%;
+}
+#textCast {
+    color: white;
+    position: absolute;
+    top: 18%; left: 16%;
+    width: 75%; height: 70%;
+}
 </style>
 
-<div id="slideb">
+<div id="slideb" class="slidebg">
 <div class="hidden" id="slidebdata">
 <h2 class="currentlytext">Currently</h2>
 <h2 id="citytext"></h2>
-
-<!-- left side -->
-<h2 class="leftside">
-Humidity<br>
-Dew Point<br>
-Pressure<br>
-Winds<br>
-Gusts<br>
-</h2>
-
+<h2 class="leftside">Humidity<br>Dew Point<br>Pressure<br>Winds<br>Gusts<br></h2>
+<h2 id="leftsidedata"></h2>
 <div class="slidebbar"></div>
-
-<h2 id="leftsidedata">
-100%<br>
-999<br>
-30.24 R<br>
-calm<br>
-none<br>
-</h2>
-
-<!-- right side -->
 <img src="/assets/icon/0.webp" id="bigicon">
 <h2 id="bigcc"></h2>
 <h2 id="bigtemp">999</h2>
 </div>
 </div>
 
+<div id="slidec" class="slidebg hidden">
+<h2 class="currentlytext" >Local Forecast</h2>
+<h2 id="citytext2"></h2>
+<h2 id="textTitle"></h2>
+<h2 id="textCast"></h2>
+</div>
 
 <script>
-setTimeout(function() {window.parent.postMessage('slideDone', '*');}, 10000);
+function textForecast(data) {
+    let target;
+    target = document.getElementById("slideb");
+    target.classList.add('hidden')
+    target = document.getElementById("slidec");
+    target.classList.remove('hidden')
+    function update(data, go) {
+        let target;
+        target = document.getElementById("textTitle");
+        target.innerText = data.extended.daypart[go].name;
+        target = document.getElementById("textCast");
+        target.innerText = data.extended.daypart[go].narration;
+    }
+    update(data, 0)
+    setTimeout(update, 6000, data, 1);
+    setTimeout(update, 12000, data, 2);
+    setTimeout(function() {window.parent.postMessage('slideDone', '*');}, 18000);
+}
 
 function setCityText(params){
     let city = params.slice(1, -3);
@@ -118,7 +139,9 @@ function setCityText(params){
     city = city.replace(/\b\w/g, function(char) {
         return char.toUpperCase();
     });
-    const bah = document.getElementById("citytext");
+    let bah = document.getElementById("citytext");
+    bah.innerText = city;
+    bah = document.getElementById("citytext2");
     bah.innerText = city;
 }
 
@@ -149,6 +172,7 @@ function getdata(params) {
         // data is done, unhide the data
         target = document.getElementById("slidebdata");
         target.classList.remove('hidden')
+        setTimeout(textForecast, 10000, data);
     })
 }
 
