@@ -33,12 +33,13 @@
 }
 #bigicon {
     position: absolute;
-    top:50;right:65;
+    top:50;left: 77%;
+    transform: translateX(-50%);
 }
 #bigcc {
     position: absolute;
     top: 160;
-    left: 74%;
+    left: 77%;
     transform: translateX(-50%);
     text-align: center;
     white-space: nowrap;
@@ -46,7 +47,7 @@
 #bigtemp {
     position: absolute;
     top: 200;
-    left: 74%;
+    left: 77%;
     transform: translateX(-50%);
     text-align: center;
 }
